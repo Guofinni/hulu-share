@@ -1,4 +1,5 @@
 import Hulu from './hulu';
+import { HuluNode } from './types/index';
 
 const a = (
     <div>
@@ -14,11 +15,43 @@ const a = (
     </div>
 );
 
-class Abc extends Hulu.Component {
+interface AbcProps {
+    aaa: number;
+    bbb: string;
+    ccc?: Record<string, any>;
+    children: HuluNode[];
+}
+
+interface AbcState {
+    ddd: string;
+    count: number;
+}
+
+class Abc extends Hulu.Component<AbcProps, AbcState> {
+    constructor(props: AbcProps) {
+        super(props);
+    }
+
+    state: AbcState = {
+        ddd: 'i am ddd',
+        count: 1
+    };
+
     render() {
+        console.debug('aaaaa', this.state.count);
         return (
             <div>
+                <div>{this.props.aaa}</div>
+                <div>{this.props.bbb}</div>
                 {a} {this.props.children}
+                <p
+                    onClick={() => {
+                        this.setState({
+                            count: this.state.count + 1
+                        });
+                    }}>
+                    {this.state.ddd} ::: {this.state.count}
+                </p>
             </div>
         );
     }
@@ -33,7 +66,7 @@ function Def() {
 }
 
 Hulu.render(
-    <Abc>
+    <Abc aaa={1111} bbb={'sss'} ccc={{ d: 1 }}>
         <div>引无数英雄竞折腰</div>
         <Def>
             <ul>

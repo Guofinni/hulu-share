@@ -1,14 +1,17 @@
 import { HuluNode } from '../types/index';
 
 function setAttribute(element: HTMLElement, key: string, value: any) {
+    if (/^on([A-Z][a-zA-Z]+)$/.test(key)) {
+        const eventName = RegExp.$1.replace(/^[A-Z]/, (s) => s.toLowerCase());
+        element.addEventListener(eventName, value);
+        return;
+    }
     element.setAttribute(key, String(value));
 }
 
-function render(huluNode: HuluNode, container: HTMLElement | null): void {
-    let root = container ?? document.body;
-
-    if (typeof huluNode === 'string') {
-        let txt = document.createTextNode(huluNode);
+function __render(huluNode: HuluNode, root: HTMLElement): void {
+    if (typeof huluNode === 'string' || typeof huluNode === 'number') {
+        let txt = document.createTextNode(String(huluNode));
         root.appendChild(txt);
         return;
     }
@@ -16,7 +19,7 @@ function render(huluNode: HuluNode, container: HTMLElement | null): void {
     // 对 children 生成的虚拟dom进行处理
     if (typeof huluNode === 'object' && huluNode instanceof Array) {
         huluNode.forEach((child: HuluNode) => {
-            render(child, root);
+            __render(child, root);
         });
         return;
     }
@@ -31,7 +34,7 @@ function render(huluNode: HuluNode, container: HTMLElement | null): void {
             });
 
             huluNode.children.forEach((child: HuluNode) => {
-                render(child, element);
+                __render(child, element);
             });
 
             root.appendChild(element);
@@ -44,19 +47,29 @@ function render(huluNode: HuluNode, container: HTMLElement | null): void {
                 huluNode.children.forEach((child: HuluNode) => {
                     comp.appendChild(child);
                 });
-                render(comp.render(), root);
+                Object.entries(huluNode.props ?? {}).forEach(([key, value]) => {
+                    comp.setAttribute(key, value);
+                });
+
+                __render(comp.render(), root);
                 return;
             }
 
             let _huluNode = huluNode.type();
-            render(_huluNode, root);
+            __render(_huluNode, root);
         }
     } catch (e) {
-        console.debug('catch', huluNode);
+        console.debug('catch', huluNode, e);
         let txt = document.createTextNode(String(huluNode));
         root.appendChild(txt);
         return;
     }
+}
+
+function render(huluNode: HuluNode, container: HTMLElement | null) {
+    let root = container ?? document.body;
+    root.innerHTML = '';
+    __render(huluNode, root);
 }
 
 export default render;
