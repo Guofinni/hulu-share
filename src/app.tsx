@@ -1,6 +1,8 @@
 import Hulu from './hulu';
 import { HuluNode } from './types/index';
 
+/** - -- - ---------------- */
+
 const a = (
     <div>
         {true} {1} {{}}
@@ -14,6 +16,38 @@ const a = (
         </ol>
     </div>
 );
+
+/** - -- - ---------------- */
+
+function Def() {
+    return (
+        <div>
+            <header>静夜思</header>
+        </div>
+    );
+}
+
+/** - -- - ---------------- */
+
+interface UserInfoProps {
+    name: string;
+    count: number;
+}
+
+class UserInfo extends Hulu.Component<UserInfoProps, {}> {
+    constructor(props: UserInfoProps) {
+        super(props);
+    }
+    render(): HuluNode {
+        return (
+            <div>
+                {this.props.name} ... {this.props.count}
+            </div>
+        );
+    }
+}
+
+/** - -- - ---------------- */
 
 interface AbcProps {
     aaa: number;
@@ -38,7 +72,6 @@ class Abc extends Hulu.Component<AbcProps, AbcState> {
     };
 
     render() {
-        console.debug('aaaaa', this.state.count);
         return (
             <div>
                 <div>{this.props.aaa}</div>
@@ -52,17 +85,10 @@ class Abc extends Hulu.Component<AbcProps, AbcState> {
                     }}>
                     {this.state.ddd} ::: {this.state.count}
                 </p>
+                <UserInfo name="张三" count={this.state.count}></UserInfo>
             </div>
         );
     }
-}
-
-function Def() {
-    return (
-        <div>
-            <header>静夜思</header>
-        </div>
-    );
 }
 
 Hulu.render(

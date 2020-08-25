@@ -3,7 +3,7 @@ import render from './render';
 
 class Component<P = {}, S = {}> {
     readonly props: Readonly<P> & Readonly<{ children?: HuluNode }>;
-    state: S = {};
+    state: S & {} = {};
 
     constructor(props: Readonly<P>) {
         this.props = props ?? {};

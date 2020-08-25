@@ -59,7 +59,6 @@ function __render(huluNode: HuluNode, root: HTMLElement): void {
             __render(_huluNode, root);
         }
     } catch (e) {
-        console.debug('catch', huluNode, e);
         let txt = document.createTextNode(String(huluNode));
         root.appendChild(txt);
         return;
